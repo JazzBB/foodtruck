@@ -1,7 +1,7 @@
 import requests
 import json
 import objectpath
-from googletrans import Translator
+from py_translator import Translator
 
 APPID = "APPID"
 KULCS = "APIKEY"
@@ -27,5 +27,5 @@ print("Össz kalória tartalom: "+str(kaloria[0]['quantity'])+ str(kaloria[0]['u
 print("Főzési idő: "+str(fozesi_ido[0]))
 print("Hozzávalók\n----------------------------------------------------------------")
 for hozzavalok_db in hozzavalok:
-    print(hozzavalok_db['text'])
+    print(Translator().translate(text=hozzavalok_db['text'],dest='hu').text)
 #print("recept neve: "+recept_neve+"\n"+"Szénhidrát tartalom(össz): "+szenhidrat)
