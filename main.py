@@ -4,12 +4,15 @@ import objectpath
 from py_translator import Translator
 from random import randint
 
+#API információ https://developer.edamam.com/
 APPID = ""
 KULCS = ""
+#Indexek szerkesztése a kereséshez
 index_from = randint(1,4)
 index_to = index_from - 1
 if index_to < index_from:
     index_to = index_to + 2
+#Request get JSON az APIn keresztül
 response = requests.get("https://api.edamam.com/search?q=fish+lemon&app_id="+APPID+"&app_key="+KULCS+"&from="+str(index_from)+"&to="+str(index_to)+"&diet=low-carb&nutrients%5BCHOCDF%5D=45-50").json()
 
 #Adatok kiszedése a JSONbol
