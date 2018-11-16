@@ -7,9 +7,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import QMessageBox, QHBoxLayout, QLabel, QComboBox, QDialog
 from PyQt5.QtCore import QTimer, Qt, QPoint, QObject
 import sys
+import os
 
-APPID = 
-KULCS = 
+APPID = ""
+KULCS = "
 check_box_value = 1
 zoldsegek = ['hagyma','krumpli','batáta','paradicsom','zeller','répa','karalábé','saláta','káposzta','cukkini','padlizsán','uborka','paprika','karfiol']
 fuszerek  = ['Bazsalikom','Petrezselyem','Oregánó','Fahéj','Dió','Szerecsendió','Chili','Kakukkfű','Koriander','Tárkony']
@@ -36,17 +37,24 @@ class FoodTruck(QtWidgets.QMainWindow):
         zoldseg = ''
         gyumolcs = ''
         gyindex = 0
+        fuszer = ''
+        hus = ''
         for zoldsegek_db in zoldsegek:
             checkbox_nr = zoldsegek.index(zoldsegek_db)+1
             command = "self.checkBox_"+str(checkbox_nr)+".isChecked()"
             if eval(command) == True:
-                zoldseg = zoldseg + "+" + str(Translator().translate(text=zoldsegek[checkbox_nr-1],dest='en').text)
+                zoldseg = zoldseg+"+"+str(Translator().translate(text=zoldsegek[checkbox_nr-1],dest='en',src='hu').text)
         for gyumolcsok_db in gyumolcsok:
             checkbox_nr_gyumolcs = gyumolcsok.index(gyumolcsok_db)+26
             command = "self.checkBox_"+str(checkbox_nr_gyumolcs)+".isChecked()"
             if eval(command) == True:
-                gyumolcs = gyumolcs + "+" + str(Translator().translate(text=gyumolcsok[checkbox_nr_gyumolcs-26],dest='en',src='hu').text)
-        response = requests.get("https://api.edamam.com/search?q="+hus+zoldseg+gyumolcs+"&app_id="+APPID+"&app_key="+KULCS+"&from="+str(index_from)+"&to="+str(index_to)+"&diet=low-carb&nutrients%5BCHOCDF%5D=45-50")
+                gyumolcs = gyumolcs+"+"+str(Translator().translate(text=gyumolcsok[checkbox_nr_gyumolcs-26],dest='en',src='hu').text)
+        for fuszerek_db in fuszerek:
+            checkbox_nr_fuszer = fuszerek.index(fuszerek_db)+16
+            command = "self.checkBox_"+str(checkbox_nr_fuszer)+".isChecked()"
+            if eval(command) == True:
+                fuszer = fuszer+"+"+str(Translator().translate(text=fuszerek[checkbox_nr_fuszer-16],dest='en',src='hu').text)
+        response = requests.get("https://api.edamam.com/search?q="+hus+zoldseg+fuszer+gyumolcs+"&app_id="+APPID+"&app_key="+KULCS+"&from="+str(index_from)+"&to="+str(index_to)+"&diet=low-carb&nutrients%5BCHOCDF%5D=45-50")
         response = response.json()
         print(hus,zoldseg,gyumolcs)
         #Adatok kiszedése a JSONbol
@@ -125,7 +133,11 @@ class FoodTruck(QtWidgets.QMainWindow):
                self.recept_out.append(hozzavalok_db['text'])
         return
     def mentes(self):
-        with open(self.receptcime.text()+'.txt', 'w') as recept_text:
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        recept_folder = os.path.exists(basedir+'/saved')
+        if recept_folder == False:
+            os.mkdir(basedir+'/saved')
+        with open('saved/'+self.receptcime.text()+'.txt', 'w') as recept_text:
             recept_text.write(str(self.recept_out.toPlainText().encode('utf-8')))
 
     def __init__(self):
