@@ -10,12 +10,12 @@ import sys
 import os
 import glob 
 
-APPID = ""
-KULCS = ""
+APPID = "80b55c8a"
+KULCS = "e92a0bb646a520b4ab4ac64d8540875f"
 check_box_value = 1
-zoldsegek = ['hagyma','krumpli','batáta','paradicsom','zeller','répa','karalábé','saláta','káposzta','cukkini','padlizsán','uborka','paprika','karfiol']
-fuszerek  = ['Bazsalikom','Petrezselyem','Oregánó','Fahéj','Dió','Szerecsendió','Chili','Kakukkfű','Koriander','Tárkony']
-gyumolcsok= ['alma','Narancs','Körte','Eper','Ananász','Meggy','Cseresznye','Lime','Szilva','Sárgabarack']
+zoldsegek = ['onion','potato','sweet potato','tomato','celery','carrot','kholrabi','salad','cabbage','zucchini','eggplant','cucumber','pepper','cauliflower']
+fuszerek  = ['bazsalikom','parsley','oregano','cinnamon','walnut','nutmeg','chili','thyme','coriander','tarragon']
+#gyumolcsok= ['alma','Narancs','Körte','Eper','Ananász','Meggy','Cseresznye','Lime','Szilva','Sárgabarack']
 zsirok_lista = ['zsir','telitett_zsir','transz_zsir','egyszeresen_tel_zsir','tobbszoros_tel_zsir']
 vitaminok_lista = ['avitamin','cvitamin','b1vitamin','b2vitamin','b3vitamin', 'b6vitamin','b12vitamin','dvitamin','evitamin','kvitamin']
 asvanyi_anyagok_lista = ['natrium','magnezium','kalcium','kalium','vas','cink','foszfor']
@@ -23,7 +23,7 @@ asvanyi_anyagok_lista = ['natrium','magnezium','kalcium','kalium','vas','cink','
 class FoodTruck(QtWidgets.QMainWindow):
     def lekerdezes(self):
         self.warning.hide()
-        index_from = randint(1,20)
+        index_from = randint(1,5)
         index_to = index_from + 1
         #recept_out törlése
         self.recept_out.clear()
@@ -51,7 +51,8 @@ class FoodTruck(QtWidgets.QMainWindow):
             checkbox_nr = zoldsegek.index(zoldsegek_db)+1
             command = "self.checkBox_"+str(checkbox_nr)+".isChecked()"
             if eval(command) == True:
-                zoldseg = zoldseg+"+"+str(Translator().translate(text=zoldsegek[checkbox_nr-1],dest='en',src='hu').text)
+                #oldseg = zoldseg+"+"+str(Translator().translate(text=zoldsegek[checkbox_nr-1],dest='en',src='hu').text)
+                zoldseg = zoldseg+"+"+zoldsegek[checkbox_nr-1]
         #for gyumolcsok_db in gyumolcsok:
         #    checkbox_nr_gyumolcs = gyumolcsok.index(gyumolcsok_db)+26
         #    command = "self.checkBox_"+str(checkbox_nr_gyumolcs)+".isChecked()"
@@ -61,7 +62,8 @@ class FoodTruck(QtWidgets.QMainWindow):
             checkbox_nr_fuszer = fuszerek.index(fuszerek_db)+16
             command = "self.checkBox_"+str(checkbox_nr_fuszer)+".isChecked()"
             if eval(command) == True:
-                fuszer = fuszer+"+"+str(Translator().translate(text=fuszerek[checkbox_nr_fuszer-16],dest='en',src='hu').text)
+                #fuszer = fuszer+"+"+str(Translator().translate(text=fuszerek[checkbox_nr_fuszer-16],dest='en',src='hu').text)
+                fuszer = fuszer+"+"+fuszerek[checkbox_nr_fuszer-16]
         get_command = hus+zoldseg+fuszer  
         get_command = get_command.replace(" ", "")
         response = requests.get("https://api.edamam.com/search?q="+get_command+"&app_id="+APPID+"&app_key="+KULCS+"&from="+str(index_from)+"&to="+str(index_to)+"&diet=low-carb&nutrients%5BCHOCDF%5D=45-50")
@@ -210,6 +212,7 @@ class FoodTruck(QtWidgets.QMainWindow):
 def main():
     app = QtWidgets.QApplication(sys.argv)
     window = FoodTruck()
+
     window.show()
     window.warning.hide()
     window.mentett_olvasas()
